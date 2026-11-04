@@ -1,7 +1,7 @@
 use crate::widgets::panel::create_status_icons;
 use crate::widgets::system_monitor::create_sys_monitor_w;
 use crate::widgets::tray::create_tray_widget;
-use crate::widgets::window_state::{close_window, toggle_window};
+use crate::widgets::window_state::{close_window, launcher_command};
 use crate::widgets::workspace::{build_workspace_popover, create_workspace_sw};
 use babydra_island::create_system_island;
 use gtk4::prelude::*;
@@ -56,10 +56,8 @@ pub fn rebuild_panel_window(
         &babydra_core::i18n::trans("panel.logo_tooltip"),
     );
 
-    let lw_clone = launcher_window.clone();
     let ccw_clone = control_center_window.clone();
     let cw_clone = calendar_window.clone();
-    let app_clone = app.clone();
     let logo_pop_click = logo_popover.clone();
     let ws_popover = build_workspace_popover(&logo_btn);
     let ws_pop_click = ws_popover.clone();
@@ -88,15 +86,11 @@ pub fn rebuild_panel_window(
         if button == 1 {
             ws_pop_click.popdown();
             // Left-click: Toggle Launcher
-            toggle_window(&lw_clone, || {
-                let l_win = babydra_launcher::build_launcher_ui(&app_clone, lw_clone.clone());
-                l_win.present();
-                l_win
-            });
+            launcher_command("toggle");
         } else if button == 2 {
             ws_pop_click.popdown();
             // Middle-click: Minimize all application windows to show desktop
-            close_window(&lw_clone);
+            launcher_command("hide");
             babydra_core::services::window::minimize_all_windows();
         } else if button == 3 {
             // Right-click: Toggle Workspace Popover
@@ -303,7 +297,7 @@ pub fn build_panel_ui(
     let cw_c2 = calendar_window.clone();
     let lw_c2 = launcher_window.clone();
     let notch_c3 = active_notch.clone();
-    babydra_core::i18n::watch_locale_change(move |_| {
+    babydra_ui_kit::ui::locale::watch_locale_change(move |_| {
         rebuild_panel_window(
             &window_c2,
             &app_c2,

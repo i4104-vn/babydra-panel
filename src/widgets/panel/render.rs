@@ -1,6 +1,7 @@
 use super::state::NetworkWidgets;
 use babydra_core::models::{ActiveNetworkType, EthernetActivityState};
 use babydra_core::services::system::network::{subscribe as subscribe_network, NetworkSnapshot};
+use babydra_ui_kit::ui::receiver::GlibReceiverAttach;
 use gtk4::prelude::*;
 use std::cell::RefCell;
 use std::rc::Rc;

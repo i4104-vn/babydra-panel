@@ -6,6 +6,15 @@ use std::rc::Rc;
 
 pub(crate) type WindowSlot = Rc<RefCell<Option<gtk4::ApplicationWindow>>>;
 
+/// Activates or hides the launcher through its application command line.
+pub(crate) fn launcher_command(action: &str) {
+    let mut command = std::process::Command::new("babydra-launcher");
+    if action == "hide" {
+        command.arg("--hide");
+    }
+    let _ = command.spawn();
+}
+
 /// Closes the window currently stored in `slot`, if one exists.
 pub(crate) fn close_window(slot: &WindowSlot) {
     if let Some(window) = slot.borrow().clone() {

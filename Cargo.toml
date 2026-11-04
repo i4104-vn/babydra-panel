@@ -6,7 +6,6 @@ edition = "2021"
 [dependencies]
 babydra-core = { workspace = true }
 babydra-island = { workspace = true }
-babydra-launcher = { workspace = true }
 babydra-ui-kit = { workspace = true }
 
 # GUI & Layer Shell

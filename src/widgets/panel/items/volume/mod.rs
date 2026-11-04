@@ -27,29 +27,19 @@ pub fn get_active_output() -> Option<String> {
 /// Updates topbar volume icon using known volume percentage and mute status (0 subprocess calls).
 pub fn update_topbar_volume_state(vol_icon: &gtk4::Image, vol_pct: f64, is_m: bool) {
     let is_dark = babydra_ui_kit::ui::icon::is_dark_mode();
-    let svg_content = if is_m || vol_pct == 0.0 {
-        if is_dark {
-            babydra_ui_kit::ui::icon::DARK_VOLUME_MUTE_SVG
-        } else {
-            babydra_ui_kit::ui::icon::LIGHT_VOLUME_MUTE_SVG
-        }
+    let icon_name = if is_m || vol_pct == 0.0 {
+        "volume-mute"
     } else if vol_pct <= 45.0 {
-        if is_dark {
-            babydra_ui_kit::ui::icon::DARK_VOLUME_LOW_SVG
-        } else {
-            babydra_ui_kit::ui::icon::LIGHT_VOLUME_LOW_SVG
-        }
+        "volume-low"
     } else {
-        if is_dark {
-            babydra_ui_kit::ui::icon::DARK_VOLUME_SVG
-        } else {
-            babydra_ui_kit::ui::icon::LIGHT_VOLUME_SVG
-        }
+        "volume"
     };
 
-    let new_icon = babydra_ui_kit::ui::icon::get_icon_from_svg(svg_content, 14);
-    if let Some(paintable) = new_icon.paintable() {
-        vol_icon.set_paintable(Some(&paintable));
+    if let Some(svg_content) = babydra_ui_kit::ui::icon::get_icon_svg(icon_name, is_dark) {
+        let new_icon = babydra_ui_kit::ui::icon::get_icon_from_svg(svg_content, 14);
+        if let Some(paintable) = new_icon.paintable() {
+            vol_icon.set_paintable(Some(&paintable));
+        }
     }
 
     vol_icon.set_tooltip_text(None);

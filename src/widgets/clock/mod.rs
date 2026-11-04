@@ -2,7 +2,7 @@ use gtk4::prelude::*;
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use crate::widgets::window_state::{close_window, toggle_window};
+use crate::widgets::window_state::{close_window, launcher_command, toggle_window};
 
 mod calendar;
 mod notifications;
@@ -18,8 +18,6 @@ pub fn create_clock_widget(
     popdown_tooltips: Option<Rc<dyn Fn()>>,
 ) -> gtk4::Button {
     let (clock_button, clock_label, red_dot, bell_box) = render::build_clock_ui();
-    babydra_core::services::notification::spawn_notif_dbus();
-
     let notification_popup = Rc::new(notifications::NotificationPopup::new(&clock_button));
     let last_notification = Rc::new(std::cell::Cell::new(None));
 
@@ -75,7 +73,6 @@ pub fn create_clock_widget(
 
     let cw_clone = calendar_window.clone();
     let ccw_clone = control_center_window.clone();
-    let lw_clone = launcher_window.clone();
     let app_clone = app.clone();
     let popdown_c = popdown_tooltips.clone();
     let notification_popup_c = notification_popup.clone();
@@ -89,7 +86,7 @@ pub fn create_clock_widget(
         }
 
         close_window(&ccw_clone);
-        close_window(&lw_clone);
+        launcher_command("hide");
         toggle_window(&cw_clone, || {
             calendar::show_calendar_window(&app_clone, cw_clone.clone())
         });

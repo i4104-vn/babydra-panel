@@ -7,6 +7,7 @@ pub use popover::build_workspace_popover;
 pub use state::*;
 
 use babydra_core::{toggle_app_window_async, DesktopApp};
+use babydra_ui_kit::ui::receiver::GlibReceiverAttach;
 use babydra_ui_kit::components::popovers::{TooltipPopover, TooltipRow};
 use gtk4::prelude::*;
 use std::cell::RefCell;

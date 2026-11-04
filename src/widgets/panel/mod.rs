@@ -5,7 +5,7 @@ mod render;
 pub mod state;
 pub mod toggle_grid;
 
-use crate::widgets::window_state::{close_window, toggle_window};
+use crate::widgets::window_state::{close_window, launcher_command, toggle_window};
 use gtk4::prelude::*;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -48,7 +48,7 @@ pub(crate) fn create_status_icons(
         let update_vol_pop_l = popovers.update_volume_popover.clone();
         let vol_pop_l = popovers.vol_popover.clone();
 
-        babydra_core::services::system::volume::spawn_volume_listener(move |state| {
+        babydra_ui_kit::ui::system::spawn_volume_listener(move |state| {
             cached_vol_l.set(state.volume);
             cached_muted_l.set(state.muted);
             items::volume::update_topbar_volume_state(&vol_icon_l, state.volume, state.muted);
@@ -61,7 +61,7 @@ pub(crate) fn create_status_icons(
 
     // Real-time event listener for system brightness changes
     {
-        babydra_core::services::system::backlight::spawn_brightness_listener(move |val| {
+        babydra_ui_kit::ui::system::spawn_brightness_listener(move |val| {
             modal::sync_cc_brightness(val);
         });
     }
@@ -106,13 +106,12 @@ pub(crate) fn create_status_icons(
     let app_clone = app.clone();
     let ccw_clone = control_center_window.clone();
     let cw_clone = calendar_window.clone();
-    let lw_clone = launcher_window.clone();
     let vol_icon_clone = vol_icon.clone();
     let popovers_click = popovers.clone();
     status_button.connect_clicked(move |_| {
         popovers_click.popdown_all();
 
-        close_window(&lw_clone);
+        launcher_command("hide");
         close_window(&cw_clone);
         toggle_window(&ccw_clone, || {
             modal::create_cc_window(&app_clone, ccw_clone.clone(), vol_icon_clone.clone())

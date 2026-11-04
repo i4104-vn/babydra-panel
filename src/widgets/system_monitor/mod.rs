@@ -2,6 +2,7 @@
 //! Uses the unified MonitorSnapshot service from babydra-core.
 
 use babydra_core::services::system::monitor::{subscribe as subscribe_monitor, MonitorSnapshot};
+use babydra_ui_kit::ui::receiver::GlibReceiverAttach;
 use gtk4::prelude::*;
 use std::cell::RefCell;
 use std::collections::VecDeque;

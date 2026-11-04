@@ -25,17 +25,15 @@ fn main() {
     // Detect DDC/CI bus for desktop monitors on startup
     widgets::panel::detect_ddc_bus();
 
-    // Spawn org.freedesktop.Notifications DBus daemon immediately on startup
-    babydra_core::services::notification::spawn_notif_dbus();
-
     let app = Application::builder()
         .application_id("org.babydra.panel")
         .flags(gtk4::gio::ApplicationFlags::NON_UNIQUE)
         .build();
 
     app.connect_activate(|app| {
+        babydra_ui_kit::ui::notifications::spawn_notif_dbus();
         // Initialize style provider (already done in init_app, but safe to call again)
-        babydra_ui_kit::ui::theme::init_theme();
+        babydra_ui_kit::ui::theme::init_theme_with_css(include_str!("assets/styles/recorder.css"));
 
         // Define shared window states for mutual exclusivity
         let control_center_window: Rc<RefCell<Option<gtk4::ApplicationWindow>>> =
